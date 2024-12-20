@@ -7,16 +7,16 @@ import org.springframework.core.Ordered;
 
 @Configuration
 public class ServletFilterConfiguration {
-    private final LocalhostRejectFilter localhostRejectFilter;
+    private final LocalhostDenyFilter localhostDenyFilter;
 
-    public ServletFilterConfiguration(LocalhostRejectFilter localhostRejectFilter) {
-        this.localhostRejectFilter = localhostRejectFilter;
+    public ServletFilterConfiguration(LocalhostDenyFilter localhostDenyFilter) {
+        this.localhostDenyFilter = localhostDenyFilter;
     }
 
     @Bean
-    public FilterRegistrationBean<LocalhostRejectFilter> urlRewriteFilter() {
-        FilterRegistrationBean<LocalhostRejectFilter> bean =
-                new FilterRegistrationBean<>(localhostRejectFilter);
+    public FilterRegistrationBean<LocalhostDenyFilter> urlRewriteFilter() {
+        FilterRegistrationBean<LocalhostDenyFilter> bean =
+                new FilterRegistrationBean<>(localhostDenyFilter);
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return bean;
     }

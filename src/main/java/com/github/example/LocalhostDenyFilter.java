@@ -13,29 +13,29 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * This filter rejects access from localhost.
+ * This filter denies access from localhost.
  * However, access from localhost is allowed while the ReadinessState is REFUSING_TRAFFIC.
  * This mechanism is mainly provided for warming up the application during startup.
  */
 @Component
-public class LocalhostRejectFilter extends OncePerRequestFilter {
-    private final Logger logger = LoggerFactory.getLogger(LocalhostRejectFilter.class);
+public class LocalhostDenyFilter extends OncePerRequestFilter {
+    private final Logger logger = LoggerFactory.getLogger(LocalhostDenyFilter.class);
     private final ApplicationAvailability availability;
 
-    public LocalhostRejectFilter(ApplicationAvailability availability) {
+    public LocalhostDenyFilter(ApplicationAvailability availability) {
         this.availability = availability;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException {
-        logger.info("Reject localhost access. remoteAddr: {}, path: {}", request.getRemoteAddr(), request.getRequestURI());
+        logger.info("Deny localhost access. remoteAddr: {}, path: {}", request.getRemoteAddr(), request.getRequestURI());
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         if (availability.getReadinessState() == ReadinessState.REFUSING_TRAFFIC) {
-            logger.info("Accept localhost access because readiness state is still REFUSING_TRAFFIC.");
+            logger.info("Allow localhost access because readiness state is still REFUSING_TRAFFIC.");
             return true;
         }
 
